@@ -34,6 +34,10 @@
             android:name="com.F.ac.Chatsc"
             android:label="@string/title_activity_chatsc" >
         </activity>
+        <activity
+            android:name="com.F.ac.AddFriend"
+            android:label="@string/title_activity_add_friend" >
+        </activity>
     </application>
 
 </manifest>

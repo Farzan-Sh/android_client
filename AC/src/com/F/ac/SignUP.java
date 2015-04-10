@@ -8,6 +8,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 public class SignUP extends Activity {
 
 	public void gostuff(View v)
@@ -20,13 +28,35 @@ public class SignUP extends Activity {
 		if (et1.getText().toString().matches("") || et2.getText().toString().matches("") || et3.getText().toString().matches(""))
 		{
 			Toast.makeText(v.getContext(),"Please Insert Your Informations...",Toast.LENGTH_LONG).show();
+			
 		}else{
+			
+			try {
+		        Socket s = new Socket("localhost",12345);
+		        OutputStream out = s.getOutputStream();
+		        PrintWriter output = new PrintWriter(out);
+		        output.println("signup new " + et1.getText().toString() + " " + et2.getText().toString() + "<|.|>");
+		        BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		        String st = input.readLine();
+		        s.close();
+		        
+		        if (st == "r_signup ok"){
+		        	Toast.makeText(v.getContext(),"You Are Known Now! Welcome To Our World!",Toast.LENGTH_LONG).show();
+		        	Intent intent = new Intent(v.getContext(), MainActivity.class);
+					startActivity(intent);
+		        }else{
+		        	Toast.makeText(v.getContext(),"Change Your UserName PlZ...",Toast.LENGTH_LONG).show();
+		        }
+		       
+		       
+		} catch (Exception e) {}
+			
+			
 		
-			Toast.makeText(v.getContext(),"You Are Known Now! Welcome To Our World!",Toast.LENGTH_LONG).show();
 			
 			
-			Intent intent = new Intent(v.getContext(), MainActivity.class);
-			startActivity(intent);
+			
+			
 		}
 	}
 	

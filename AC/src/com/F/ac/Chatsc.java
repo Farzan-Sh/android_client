@@ -1,8 +1,17 @@
 package com.F.ac;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +27,7 @@ public class Chatsc extends ActionBarActivity {
 	long rowId;
 	String name = "";
 	DBAdapter db = new DBAdapter(this);
+	String s = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,10 +104,46 @@ public class Chatsc extends ActionBarActivity {
 		
 			EditText msg = (EditText) findViewById(R.id.message);
 			EditText allmsg = (EditText) findViewById(R.id.allmesseges);
-			String s = msg.getText().toString();
+			s = msg.getText().toString();
 			msg.setText("");
 			//allmsg.append(s);
 			allmsg.append( "You: " + s.toString() + "\n");
+			
+			
+			
+			try {
+		        
+		        
+		        new Thread(new Runnable() {
+			        public void run() {
+			        	try{
+			        	Socket so = new Socket("localhost",12345);
+			        	OutputStream out = so.getOutputStream();
+				        PrintWriter output = new PrintWriter(out);
+				        output.println("send_pv_msg " + name + " " + s + "<|.|>");
+			        }catch(Exception e){}
+			        }
+			    }).start();
+				
+				new Thread(new Runnable() {
+			        public void run() {
+			        	try{
+			        	Socket so = new Socket("localhost",12345);
+			        	BufferedReader input = new BufferedReader(new InputStreamReader(so.getInputStream()));    
+				        String st = input.readLine();
+				        so.close();
+			        	}catch(Exception e){}
+			        }
+			    }).start();
+		        
+		       
+		} catch (Exception e) {}
+			
+			
+			
+			
+			
+			
 			
 			db.open();
 			Cursor c = db.getTitle(rowId);
@@ -111,6 +157,9 @@ public class Chatsc extends ActionBarActivity {
 			
 			}
 			db.close();
+			
+			
+			
 		//Toast.makeText(v.getContext(), "Sent This To " + name.toString() ,Toast.LENGTH_LONG).show();
 		}
 	}

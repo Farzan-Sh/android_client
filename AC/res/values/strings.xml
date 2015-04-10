@@ -7,5 +7,6 @@
     <string name="title_activity_friends">Friends</string>
     <string name="title_activity_chat_screen">ChatScreen</string>
     <string name="title_activity_chatsc">Chatsc</string>
+    <string name="title_activity_add_friend">AddFriend</string>
 
 </resources>

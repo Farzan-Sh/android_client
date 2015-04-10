@@ -1,5 +1,14 @@
 package com.F.ac;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -10,13 +19,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
 
-	
 	
 	public void gotosignup(View v)
 	{
@@ -37,9 +46,30 @@ public class MainActivity extends ActionBarActivity {
 			Toast.makeText(v.getContext(),"Please Insert Your Informations...",Toast.LENGTH_LONG).show();
 		}else{
 		
-			Intent intent = new Intent(v.getContext(), Friends.class);
-			intent.putExtra("userpass", et1.getText().toString() + et2.getText().toString());
-	        startActivity(intent); 	
+			try {
+		        Socket s = new Socket("localhost",12345);
+		        OutputStream out = s.getOutputStream();
+		        PrintWriter output = new PrintWriter(out);
+		        output.println("login " + et1.getText().toString() + " " + et2.getText().toString() + "<|.|>");
+		        BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		        String st = input.readLine();
+		        s.close();
+		        
+		        if (st == "r_login ok"){
+		        	Intent intent = new Intent(v.getContext(), Friends.class);
+					intent.putExtra("userpass", et1.getText().toString() + et2.getText().toString());
+			        startActivity(intent); 
+		        }else{
+		        	Toast.makeText(v.getContext(),"You Are Not Authenticated",Toast.LENGTH_LONG).show();
+		        }
+		       
+		       
+		} catch (Exception e) {}
+			
+			
+			
+			
+	      
 	        
 		}
 	}
@@ -53,6 +83,8 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+			
+		
 	}
 
 	@Override

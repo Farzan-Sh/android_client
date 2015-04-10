@@ -24,10 +24,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
 import android.database.Cursor;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Friends extends ActionBarActivity {
 
 	//========================================================================================
+	
+	String new_friend_user = "";
 	
 	List<Map<String, String>> friendsList = new ArrayList<Map<String,String>>();
 	DBAdapter db = new DBAdapter(this);
@@ -84,7 +90,7 @@ public class Friends extends ActionBarActivity {
 		db.open(); 
 		long id; 
 		
-		friendsList.add(createFriend("friend", "A New Friend!"));
+		friendsList.add(createFriend("friend", new_friend_user));
 		id = db.insertTitle(userpass.toString(), "A New Friend!", "");
 		
 		db.close();
@@ -129,6 +135,7 @@ public class Friends extends ActionBarActivity {
 		 	   	 Bundle extras = getIntent().getExtras();
 		 		 String userpass = ""; 
 		 		 userpass = extras.getString("userpass");
+		 		 new_friend_user = extras.getString("new_user");
 		 		 db.open(); 
 		 		 
 		 		 
