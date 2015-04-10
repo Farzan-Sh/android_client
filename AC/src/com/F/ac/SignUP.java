@@ -24,8 +24,9 @@ public class SignUP extends Activity {
 		
 			Toast.makeText(v.getContext(),"You Are Known Now! Welcome To Our World!",Toast.LENGTH_LONG).show();
 			
+			
 			Intent intent = new Intent(v.getContext(), MainActivity.class);
-	        startActivity(intent);
+			startActivity(intent);
 		}
 	}
 	

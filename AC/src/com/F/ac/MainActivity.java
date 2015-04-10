@@ -38,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
 		}else{
 		
 			Intent intent = new Intent(v.getContext(), Friends.class);
+			intent.putExtra("userpass", et1.getText().toString() + et2.getText().toString());
 	        startActivity(intent); 	
 	        
 		}

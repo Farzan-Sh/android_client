@@ -23,21 +23,49 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
+import android.database.Cursor;
 
 public class Friends extends ActionBarActivity {
 
 	//========================================================================================
 	
 	List<Map<String, String>> friendsList = new ArrayList<Map<String,String>>();
-	 
+	DBAdapter db = new DBAdapter(this);
 	
 	private void initList()
 	{
+		 
+		Bundle extras = getIntent().getExtras();
+		String userpass = ""; 
+		userpass = extras.getString("userpass");
+		db.open(); 
+		long id; 
+		
 		friendsList.add(createFriend("friend", "Farzan"));
+		id = db.insertTitle(userpass.toString(), "Farzan", "");
 		friendsList.add(createFriend("friend", "Kia"));
+		id = db.insertTitle(userpass.toString(), "Kia", "");
 		friendsList.add(createFriend("friend", "Amin"));
+		id = db.insertTitle(userpass.toString(), "Amin", "");
 		friendsList.add(createFriend("friend", "Aref"));
+		id = db.insertTitle(userpass.toString(), "Aref", "");
 		friendsList.add(createFriend("friend", "Milad"));
+		id = db.insertTitle(userpass.toString(), "Milad", "");
+		
+        Cursor c = db.getAllTitles();
+        if (c.moveToFirst())
+        {
+            do {          
+                if (c.getString(1).equals(userpass.toString()) && !c.getString(2).equals("Farzan") &&
+                		!c.getString(2).equals("Kia") && !c.getString(2).equals("Amin")
+                		&& !c.getString(2).equals("Aref") && !c.getString(2).equals("Milad")){
+                	friendsList.add(createFriend("friend", c.getString(2)));
+                	
+                }
+                 } while (c.moveToNext());
+        }
+        db.close();
+		db.close();
 	}
 	 
 	private HashMap<String, String> createFriend(String key, String name) {
@@ -49,7 +77,17 @@ public class Friends extends ActionBarActivity {
 	
 	public void addf()
 	{
+		DBAdapter db = new DBAdapter(this); 
+		Bundle extras = getIntent().getExtras();
+		String userpass = ""; 
+		userpass = extras.getString("userpass");
+		db.open(); 
+		long id; 
+		
 		friendsList.add(createFriend("friend", "A New Friend!"));
+		id = db.insertTitle(userpass.toString(), "A New Friend!", "");
+		
+		db.close();
 	}
 	
 	
@@ -86,6 +124,26 @@ public class Friends extends ActionBarActivity {
 		         
 		         Intent intent = new Intent(view.getContext(), Chatsc.class);
 		         intent.putExtra("name",clickedView.getText().toString());
+		         
+		          
+		 	   	 Bundle extras = getIntent().getExtras();
+		 		 String userpass = ""; 
+		 		 userpass = extras.getString("userpass");
+		 		 db.open(); 
+		 		 
+		 		 
+		 		  Cursor c = db.getAllTitles();
+		 	        if (c.moveToFirst())
+		 	        {
+		 	            do {          
+		 	                if (c.getString(1).equals(userpass.toString()) && c.getString(2).equals(clickedView.getText().toString())){
+		 	                	intent.putExtra("rowId", c.getLong(0));
+		 	                	break;
+		 	                }
+		 	                 } while (c.moveToNext());
+		 	        }
+		                 
+		         
 		         startActivity(intent);
 		         
 		     }
