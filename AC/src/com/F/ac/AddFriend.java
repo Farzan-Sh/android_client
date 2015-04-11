@@ -26,10 +26,28 @@ public class AddFriend extends ActionBarActivity {
 	public void frind_adding(View v)
 	{
 		EditText et = (EditText) findViewById(R.id.editText1);
+		
+		try {
+	        Socket s = new Socket("localhost",12345);
+	        OutputStream out = s.getOutputStream();
+	        PrintWriter output = new PrintWriter(out);
+	        output.println("login " + et.getText().toString() + "<|.|>");
+	        BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+	        String st = input.readLine();
+	        s.close();
+	        
+	        if (st == "r_exists_user yes"){
+	        	Intent intent = new Intent(v.getContext(), Friends.class);
+	    		intent.putExtra("new_user",et.getText().toString());
+	    		startActivity(intent);
+	        }else{
+	        	Toast.makeText(v.getContext(),"The User Is Not Valid...",Toast.LENGTH_LONG).show();
+	        }
+	       
+	       
+	} catch (Exception e) {}
 			
-		Intent intent = new Intent(v.getContext(), Friends.class);
-		intent.putExtra("new_user",et.getText().toString());
-		startActivity(intent);
+		
 	}
 	
 	
