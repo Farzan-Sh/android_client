@@ -28,6 +28,7 @@ public class Chatsc extends ActionBarActivity {
 	String name = "";
 	DBAdapter db = new DBAdapter(this);
 	String s = "";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,12 +48,31 @@ public class Chatsc extends ActionBarActivity {
 		    rowId = extras.getLong("rowId");
 		}
 		db.open();
-		EditText allmsg = (EditText) findViewById(R.id.allmesseges);
+		final EditText allmsg = (EditText) findViewById(R.id.allmesseges);
 		//allmsg.append("ElmosEram: Say Hello To " + name.toString() + "\n");
 		Cursor c = db.getTitle(rowId);
 		
 		allmsg.append(c.getString(3).toString());
 		db.close();
+		
+		new Thread(new Runnable() {
+	        public void run() {
+	        	try{
+	        	Socket so = new Socket("localhost",12345);
+	        	BufferedReader input = new BufferedReader(new InputStreamReader(so.getInputStream()));  
+	        	try{
+		        String st = input.readLine();
+		        String[] parts = st.split(" ");
+		        String sender = parts[1];
+		        String what = parts[4]; 
+		        allmsg.append(sender + " said: " + what);
+	        	}catch(Exception e){
+	        	}
+	        	}catch(Exception e){}
+	        }
+	    }).start();
+        
+		
 	}
 
 	@Override
@@ -121,22 +141,12 @@ public class Chatsc extends ActionBarActivity {
 			        	OutputStream out = so.getOutputStream();
 				        PrintWriter output = new PrintWriter(out);
 				        output.println("send_pv_msg " + name + " " + s + "<|.|>");
-			        }catch(Exception e){}
-			        }
-			    }).start();
-				
-				new Thread(new Runnable() {
-			        public void run() {
-			        	try{
-			        	Socket so = new Socket("localhost",12345);
-			        	BufferedReader input = new BufferedReader(new InputStreamReader(so.getInputStream()));    
-				        String st = input.readLine();
 				        so.close();
 			        	}catch(Exception e){}
+			        	
 			        }
 			    }).start();
-		        
-		       
+						       
 		} catch (Exception e) {}
 			
 			

@@ -24,15 +24,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
 import android.database.Cursor;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+
+
 public class Friends extends ActionBarActivity {
 
 	//========================================================================================
-	
+	public View v;
 	String new_friend_user = "";
 	
 	List<Map<String, String>> friendsList = new ArrayList<Map<String,String>>();
@@ -98,7 +103,6 @@ public class Friends extends ActionBarActivity {
 	
 	
 	//===========================================================================================
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,6 +112,28 @@ public class Friends extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		
+		
+		new Thread(new Runnable() {
+	        public void run() {
+	        	try{
+	        	Socket so = new Socket("localhost",12345);
+	        	BufferedReader input = new BufferedReader(new InputStreamReader(so.getInputStream()));  
+	        	try{
+		        String st = input.readLine();
+		        String[] parts = st.split(" ");
+		        String sender = parts[1];
+		        String what = parts[4];
+		        Toast.makeText(v.getContext(),sender + " said: " + what,Toast.LENGTH_LONG).show();
+	        	}catch(Exception e){
+	        	}
+	        	}catch(Exception e){}
+	        }
+	    }).start();
+		
+		
+		
+		
 		
 		SimpleAdapter simpleAdpt = new SimpleAdapter(this, friendsList, android.R.layout.simple_list_item_1, new String[] {"friend"}, new int[] {android.R.id.text1});
 

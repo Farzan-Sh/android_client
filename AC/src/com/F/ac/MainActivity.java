@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
 		        String st = input.readLine();
 		        s.close();
 		        
-		        if (st == "r_login ok"){
+		        if (st == "r_login ok<|.|>"){
 		        	Intent intent = new Intent(v.getContext(), Friends.class);
 					intent.putExtra("userpass", et1.getText().toString() + et2.getText().toString());
 			        startActivity(intent); 

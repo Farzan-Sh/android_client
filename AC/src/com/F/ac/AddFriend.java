@@ -36,7 +36,7 @@ public class AddFriend extends ActionBarActivity {
 	        String st = input.readLine();
 	        s.close();
 	        
-	        if (st == "r_exists_user yes"){
+	        if (st == "r_exists_user yes<|.|>"){
 	        	Intent intent = new Intent(v.getContext(), Friends.class);
 	    		intent.putExtra("new_user",et.getText().toString());
 	    		startActivity(intent);
